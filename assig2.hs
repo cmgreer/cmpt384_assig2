@@ -12,12 +12,39 @@ data ME = Num Int
 deriv :: ME -> Char -> ME
 
 -- Placeholder
-deriv m = m
+deriv m c = m
 
 simplifyME :: ME -> ME
 
--- Placeholder
-simplifyME m = m
+mkNum :: Int -> ME
+mkVar :: Char -> ME
+mkGroup :: ME -> ME
+mkAdd :: ME -> ME -> ME
+mkSub :: ME -> ME -> ME
+mkMul :: ME -> ME -> ME
+mkPower :: ME -> Int -> ME
+mkNeg :: ME -> ME
+
+simplifyME (Num i) = mkNum i
+simplifyME (Var c) = mkVar c
+simplifyME (Group e) = mkGroup (simplifyME e)
+simplifyME (Add e1 e2) = mkAdd (simplifyME e1) (simplifyME e2)
+simplifyME (Sub e1 e2) = mkSub (simplifyME e1) (simplifyME e2)
+simplifyME (Mul e1 e2) = mkMul (simplifyME e1) (simplifyME e2)
+simplifyME (Power e i) = mkPower (simplifyME e) i
+simplifyME (Neg e) = mkNeg (simplifyME e)
+
+
+--Placeholders
+mkNum i = (Num i)
+mkVar c = (Var c)
+mkGroup e = (Group e)
+mkAdd e1 e2 = (Add e1 e2)
+mkSub e1 e2 = (Sub e1 e2)
+mkMul e1 e2 = (Mul e1 e2)
+mkPower e i = (Power e i)
+mkNeg e = (Neg e)
+
 
 unparseME :: ME -> [Char]
 
