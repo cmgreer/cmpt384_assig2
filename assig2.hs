@@ -11,8 +11,25 @@ data ME = Num Int
 
 deriv :: ME -> Char -> ME
 
+deriv (Num n) x = (Num 0)
+
+deriv (Var a) x
+  | a==x = (Num 1)
+  | otherwise = (Num 0)
+
+deriv (Neg f) x = mkNeg (deriv f x)
+
+deriv (Add f g) x = mkAdd (deriv f x) (deriv g x)
+
+deriv (Sub f g) x = mkSub (deriv f x) (deriv g x)
+
+deriv (Mul f g) x = ( mkAdd (mkMul g (deriv f x)) (mkMul f (deriv g x)) )
+
+deriv (Power f n) x = (mkMul (mkMul (Num n) (mkPower f (n-1))) (deriv f x))
+
+
 -- Placeholder
-deriv m c = m
+--deriv m c = m
 
 simplifyME :: ME -> ME
 
@@ -25,7 +42,7 @@ mkMul :: ME -> ME -> ME
 mkPower :: ME -> Int -> ME
 mkNeg :: ME -> ME
 
-simplifyME (Num i) = mkNum i
+simplifyME (Num n) = mkNum n
 simplifyME (Var c) = mkVar c
 simplifyME (Group e) = mkGroup (simplifyME e)
 simplifyME (Add e1 e2) = mkAdd (simplifyME e1) (simplifyME e2)
