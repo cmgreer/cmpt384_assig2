@@ -25,7 +25,7 @@ deriv (Sub f g) x = mkSub (deriv f x) (deriv g x)
 
 deriv (Mul f g) x = (mkAdd (mkMul g (deriv f x)) (mkMul f (deriv g x)))
 
-deriv (Power f n) x = (mkMul (mkMul (Num n) (mkPower f (n-1))) (deriv f x))
+deriv (Power f n) x = mkMul (mkMul (Num n) (mkPower f (n-1))) (deriv f x)
 
 
 -- Placeholder
@@ -44,23 +44,23 @@ mkNeg :: ME -> ME
 -- Todo:
 --   f + m + n = f + k
 --   f - m - n = f - k
-mkNum i = (Num i)
+mkNum i = Num i
 
-mkVar c = (Var c)
+mkVar c = Var c
 
-mkGroup e = (Group e)
+mkGroup e = Group e
 
 mkAdd (Mul (Num i1) e1) (Mul (Num i2) e2)
     | e1 == e2      = mkMul (Num (i1 + i2)) e1
     | otherwise     = Add (mkMul (Num i1) e1) (mkMul (Num i2) e2)
 mkAdd (Num i1) (Num i2) = Num (i1 + i2)
 mkAdd e (Num 0) = e
-mkAdd e1 e2 = (Add e1 e2)
+mkAdd e1 e2 = Add e1 e2
 
 mkSub (Num i1) (Num i2) = Num (i1 - i2)
 mkSub (Num 0) e = Neg e
 mkSub e (Num 0) = e
-mkSub e1 e2 = (Sub e1 e2)
+mkSub e1 e2 = Sub e1 e2
 
 mkMul (Power e1 i1) (Power e2 i2)
     | e1 == e2      = mkPower e1 (i1 + i2)
@@ -68,14 +68,14 @@ mkMul (Power e1 i1) (Power e2 i2)
 mkMul (Num i1) (Num i2) = Num (i1 * i2)
 mkMul (Num 0) e = Num 0
 mkMul (Num 1) e = e
-mkMul e1 e2 = (Mul e1 e2)
+mkMul e1 e2 = Mul e1 e2
 
 mkPower (Num i1) i2 = Num (i1 ^ i2)
 mkPower e 0 = Num 1
 mkPower e 1 = e
-mkPower e i = (Power e i)
+mkPower e i = Power e i
 
-mkNeg e = (Neg e)
+mkNeg e = Neg e
 
 
 simplifyME :: ME -> ME
