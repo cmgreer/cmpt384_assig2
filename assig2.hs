@@ -23,7 +23,7 @@ deriv (Add f g) x = mkAdd (deriv f x) (deriv g x)
 
 deriv (Sub f g) x = mkSub (deriv f x) (deriv g x)
 
-deriv (Mul f g) x = ( mkAdd (mkMul g (deriv f x)) (mkMul f (deriv g x)) )
+deriv (Mul f g) x = (mkAdd (mkMul g (deriv f x)) (mkMul f (deriv g x)))
 
 deriv (Power f n) x = (mkMul (mkMul (Num n) (mkPower f (n-1))) (deriv f x))
 
