@@ -31,7 +31,6 @@ deriv (Power f n) x = (mkMul (mkMul (Num n) (mkPower f (n-1))) (deriv f x))
 -- Placeholder
 --deriv m c = m
 
-simplifyME :: ME -> ME
 
 mkNum :: Int -> ME
 mkVar :: Char -> ME
@@ -42,16 +41,6 @@ mkMul :: ME -> ME -> ME
 mkPower :: ME -> Int -> ME
 mkNeg :: ME -> ME
 
-simplifyME (Num n) = mkNum n
-simplifyME (Var c) = mkVar c
-simplifyME (Group e) = mkGroup (simplifyME e)
-simplifyME (Add e1 e2) = mkAdd (simplifyME e1) (simplifyME e2)
-simplifyME (Sub e1 e2) = mkSub (simplifyME e1) (simplifyME e2)
-simplifyME (Mul e1 e2) = mkMul (simplifyME e1) (simplifyME e2)
-simplifyME (Power e i) = mkPower (simplifyME e) i
-simplifyME (Neg e) = mkNeg (simplifyME e)
-
-
 --Placeholders
 mkNum i = (Num i)
 mkVar c = (Var c)
@@ -61,6 +50,18 @@ mkSub e1 e2 = (Sub e1 e2)
 mkMul e1 e2 = (Mul e1 e2)
 mkPower e i = (Power e i)
 mkNeg e = (Neg e)
+
+
+simplifyME :: ME -> ME
+
+simplifyME (Num n) = mkNum n
+simplifyME (Var c) = mkVar c
+simplifyME (Group e) = mkGroup (simplifyME e)
+simplifyME (Add e1 e2) = mkAdd (simplifyME e1) (simplifyME e2)
+simplifyME (Sub e1 e2) = mkSub (simplifyME e1) (simplifyME e2)
+simplifyME (Mul e1 e2) = mkMul (simplifyME e1) (simplifyME e2)
+simplifyME (Power e i) = mkPower (simplifyME e) i
+simplifyME (Neg e) = mkNeg (simplifyME e)
 
 
 unparseME :: ME -> [Char]
