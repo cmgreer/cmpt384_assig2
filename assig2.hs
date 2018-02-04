@@ -9,6 +9,9 @@ data ME = Num Int
           | Neg ME
           deriving (Show, Ord, Eq)
 
+
+-- Todo:
+--   Finish deriv
 deriv :: ME -> Char -> ME
 
 deriv (Num n) x = (Num 0)
@@ -28,10 +31,10 @@ deriv (Mul f g) x = (mkAdd (mkMul g (deriv f x)) (mkMul f (deriv g x)))
 deriv (Power f n) x = mkMul (mkMul (Num n) (mkPower f (n-1))) (deriv f x)
 
 
--- Placeholder
---deriv m c = m
-
-
+-- Todo:
+--   Add canonical form rules
+--   Implement f + m + n = f + k
+--   Implement f - m - n = f - k
 mkNum :: Int -> ME
 mkVar :: Char -> ME
 mkGroup :: ME -> ME
@@ -41,9 +44,6 @@ mkMul :: ME -> ME -> ME
 mkPower :: ME -> Int -> ME
 mkNeg :: ME -> ME
 
--- Todo:
---   f + m + n = f + k
---   f - m - n = f - k
 mkNum i = Num i
 
 mkVar c = Var c
@@ -90,7 +90,8 @@ simplifyME (Power e i) = mkPower (simplifyME e) i
 simplifyME (Neg e) = mkNeg (simplifyME e)
 
 
+-- Todo:
+--   Implement unparse
 unparseME :: ME -> [Char]
 
--- Placeholder
 unparseME m = ""
