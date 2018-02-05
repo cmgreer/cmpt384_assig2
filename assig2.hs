@@ -35,8 +35,7 @@ deriv (Group f) x = deriv f x
 
 -- Todo:
 --   Add canonical form rules
---   Implement f + m + n = f + k
---   Implement f - m - n = f - k
+
 mkNum :: Int -> ME
 mkVar :: Char -> ME
 mkGroup :: ME -> ME
@@ -57,11 +56,13 @@ mkAdd (Mul (Num i1) e1) (Mul (Num i2) e2)
     | otherwise     = Add (mkMul (Num i1) e1) (mkMul (Num i2) e2)
 mkAdd (Num i1) (Num i2) = Num (i1 + i2)
 mkAdd e (Num 0) = e
+mkAdd (Add e (Num i1)) (Num i2) = mkAdd e (Num (i1 + i2))
 mkAdd e1 e2 = Add e1 e2
 
 mkSub (Num i1) (Num i2) = Num (i1 - i2)
 mkSub (Num 0) e = Neg e
 mkSub e (Num 0) = e
+mkSub (Sub e (Num i1)) (Num i2) = mkSub e (Num (i1 + i2))
 mkSub e1 e2 = Sub e1 e2
 
 mkMul (Power e1 i1) (Power e2 i2)
