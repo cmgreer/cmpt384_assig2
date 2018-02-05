@@ -30,6 +30,8 @@ deriv (Mul f g) x = (mkAdd (mkMul g (deriv f x)) (mkMul f (deriv g x)))
 
 deriv (Power f n) x = mkMul (mkMul (Num n) (mkPower f (n-1))) (deriv f x)
 
+deriv (Group f) x = deriv f x
+
 
 -- Todo:
 --   Add canonical form rules
