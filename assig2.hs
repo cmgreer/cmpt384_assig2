@@ -30,7 +30,7 @@ deriv (Mul f g) x = (mkAdd (mkMul g (deriv f x)) (mkMul f (deriv g x)))
 
 deriv (Power f n) x = mkMul (mkMul (Num n) (mkPower f (n-1))) (deriv f x)
 
-deriv (Group f) x = deriv f x
+deriv (Group f) x = (Group (deriv f x))
 
 
 -- Todo:
@@ -93,8 +93,40 @@ simplifyME (Power e i) = mkPower (simplifyME e) i
 simplifyME (Neg e) = mkNeg (simplifyME e)
 
 
+--Todo:
+--Add more rules to addGroups?
+addGroups :: ME -> ME
+
+addGroups (Mul (Add e1 e2) e3) = Mul (Group (Add e1 e2)) (e3)
+addGroups (Mul e1 (Add e2 e3)) = Mul (e1) (Group (Add e2 e3))
+addGroups (Mul (Sub e1 e2) e3) = Mul (Group (Sub e1 e2)) (e3)
+addGroups (Mul e1 (Sub e2 e3)) = Mul (e1) (Group (Sub e2 e3))
+
+addGroups (Power (Add e1 e2) i) = Power (Group (Add e1 e2)) i
+addGroups (Power (Sub e1 e2) i) = Power (Group (Sub e1 e2)) i
+addGroups (Power (Mul e1 e2) i) = Power (Group (Mul e1 e2)) i
+addGroups (Power (Neg e) i) = Power (Group (Neg e)) i
+
+addGroups (Neg (Add e1 e2)) = Neg (Group (Add e1 e2))
+addGroups (Neg (Sub e1 e2)) = Neg (Group (Sub e1 e2))
+addGroups (Neg (Mul e1 e2)) = Neg (Group (Mul e1 e2))
+
+addGroups e = e
+
 -- Todo:
 --   Implement unparse
 unparseME :: ME -> [Char]
-
-unparseME m = ""
+unparseME (Num n) = show n
+unparseME (Var x) = x:[]
+unparseME (Group e) = "("++(unparseME e)++")"
+unparseME (Add e1 e2) = (unparseME e1)++"+"++(unparseME e2)
+unparseME (Sub e1 e2) = (unparseME e1)++"-"++(unparseME e2)
+unparseME (Mul e1 e2)
+  |(Mul e1 e2) /= (addGroups (Mul e1 e2)) = unparseME (addGroups (Mul e1 e2))
+  |otherwise = (unparseME e1)++"*"++(unparseME e2)
+unparseME (Power e i)
+  |(Power e i) /= (addGroups (Power e i)) = unparseME (addGroups (Power e i))
+  |otherwise = (unparseME e)++"**"++(show i)
+unparseME (Neg e)
+  |(Neg e) /= (addGroups (Neg e)) = unparseME (addGroups (Neg e))
+  |otherwise = "-"++(unparseME e)
