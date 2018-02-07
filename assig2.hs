@@ -82,10 +82,12 @@ mkSub e (Num 0) = e
 mkSub (Sub e (Num i1)) (Num i2) = mkSub e (Num (i1 + i2))
 mkSub e1 e2 = Sub e1 e2
 
+mkMul e1 (Mul e2 e3) = (mkMul (mkMul e1 e2) e3)
 mkMul (Power e1 i1) (Power e2 i2)
     | e1 == e2      = mkPower e1 (i1 + i2)
     | otherwise     = Mul (mkPower e1 i1) (mkPower e2 i2)
 mkMul (Num i1) (Num i2) = Num (i1 * i2)
+mkMul e (Num i) = mkMul (Num i) e
 mkMul (Num 0) e = Num 0
 mkMul (Num 1) e = e
 mkMul e1 e2 = Mul e1 e2
