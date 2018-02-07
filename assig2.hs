@@ -51,16 +51,33 @@ mkVar c = Var c
 
 mkGroup e = Group e
 
+mkAdd (Num i) (Var e) = mkAdd (Var e) (Num i)
+mkAdd (Num i) (Group e) = mkAdd (Group e) (Num i)
+mkAdd (Num i) (Add e1 e2) = mkAdd (Add e1 e2) (Num i)
+mkAdd (Num i) (Sub e1 e2) = mkAdd (Sub e1 e2) (Num i)
+mkAdd (Num i) (Mul e1 e2) = mkAdd (Mul e1 e2) (Num i)
+mkAdd (Num i) (Power e n) = mkAdd (Power e n) (Num i)
+mkAdd (Num i) (Neg e) = mkAdd (Neg e) (Num i)
+
+mkAdd (Add e (Num i1)) (Num i2) = mkAdd e (Num (i1 + i2))
+mkAdd (Add e1 (Num i)) e2 = mkAdd (mkAdd e1 e2) (Num i)
+
 mkAdd (Mul (Num i1) e1) (Mul (Num i2) e2)
     | e1 == e2      = mkMul (Num (i1 + i2)) e1
     | otherwise     = Add (mkMul (Num i1) e1) (mkMul (Num i2) e2)
 mkAdd (Num i1) (Num i2) = Num (i1 + i2)
 mkAdd e (Num 0) = e
-mkAdd (Add e (Num i1)) (Num i2) = mkAdd e (Num (i1 + i2))
 mkAdd e1 e2 = Add e1 e2
 
+mkSub (Num i) (Var e) = mkAdd (mkNeg(Var e)) (Num i)
+mkSub (Num i) (Group e) = mkAdd (mkNeg(Group e)) (Num i)
+mkSub (Num i) (Add e1 e2) = mkAdd (mkNeg(Add e1 e2)) (Num i)
+mkSub (Num i) (Sub e1 e2) = mkAdd (mkNeg(Sub e1 e2)) (Num i)
+mkSub (Num i) (Mul e1 e2) = mkAdd (mkNeg(Mul e1 e2)) (Num i)
+mkSub (Num i) (Power e n) = mkAdd (mkNeg(Power e n)) (Num i)
+mkSub (Num i) (Neg e) = mkAdd e (Num i)
+
 mkSub (Num i1) (Num i2) = Num (i1 - i2)
-mkSub (Num 0) e = Neg e
 mkSub e (Num 0) = e
 mkSub (Sub e (Num i1)) (Num i2) = mkSub e (Num (i1 + i2))
 mkSub e1 e2 = Sub e1 e2
