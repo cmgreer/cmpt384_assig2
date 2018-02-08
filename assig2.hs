@@ -125,10 +125,12 @@ addGroups (Power (Add e1 e2) i) = Power (Group (Add e1 e2)) i
 addGroups (Power (Sub e1 e2) i) = Power (Group (Sub e1 e2)) i
 addGroups (Power (Mul e1 e2) i) = Power (Group (Mul e1 e2)) i
 addGroups (Power (Neg e) i) = Power (Group (Neg e)) i
+addGroups (Power (Power e i1) i2) = Power (Group (Power e i1)) i2
 
 addGroups (Neg (Add e1 e2)) = Neg (Group (Add e1 e2))
 addGroups (Neg (Sub e1 e2)) = Neg (Group (Sub e1 e2))
 addGroups (Neg (Mul e1 e2)) = Neg (Group (Mul e1 e2))
+addGroups (Neg (Neg e)) = Neg (Group (Neg e))
 
 addGroups e = e
 
